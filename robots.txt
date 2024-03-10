@@ -1,0 +1,226 @@
+<html manifest="cache.appcache">
+
+<head>
+    <title>PS5 Kernel Exploit (3.xx-4.xx)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="main.css">
+
+    <script>
+        function allset() { }
+    </script>
+    <script defer src="int64.js"></script>
+    <script defer src="rop.js"></script>
+    <script defer src="exploit.js"></script>
+    <script defer src="payload_map.js"></script>
+    <script defer src="custom_host_stuff.js"></script>
+    <script defer src="appcache_handler.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            add_cache_event_toasts();
+        }, false);
+    </script>
+  <header>
+    <div class="left">
+      <a class="jeux">ESP32-S2 PS5 FW 3.XX/4.XX</a>
+    </div>
+    <div class="right">
+      <a href="http://10.1.1.1/admin.html" target="_blank" rel="noopener noreferrer" class="settings" style="margin-right:45px"><img
+          src="data:image/png;base64,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" alt="" width="50px" height="50px"></a>
+    </div>
+    <div style="font-size: 30px">Pass = <span style="color:green" id=passCounter></span>&nbsp;&nbsp;:&nbsp;&nbsp;Fail =
+      <span style="color:red" id=failCounter></span>
+    </div>
+    <div style="margin-right:-95px;font-size:30px"><span>Firmware-</span> <span id="PS4fw"></span></div>
+  </header>
+</head>
+
+</html>
+
+
+<body>
+    <div id="toast-container"></div>
+
+    <div style="margin: 40px;">
+        <p id="current-fw" class="text-secondary" style="text-align: center; margin-bottom: 8px; padding-bottom: 0;">
+        </p>
+        <p id="listening-ip" class="text-secondary" style="text-align: center; margin-top: 0; padding-top: 0;"><br/></p>
+    </div>
+
+    <div id="before-jb-view">
+
+        <div id="run-jb-parent" class="opacity-transition"
+            style="display: flex; justify-content: center; align-items: center; position: absolute; top: 0;left: 0; width: 100%; height: 100%;">
+            <a tabindex="0" class="btn" style="max-width: 50%;" id="run-jb" onclick="runJailbreak()">Jailbreak</a>
+        </div>
+
+        <div id="jb-progress" class="opacity-transition"
+            style="display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; top: 0;left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none;">
+            <div class="lds-ellipsis" style="margin-top: 40px;">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <p id="jb-progress-status-text" style="text-align: center; width: 100%; margin-top: 40px;">
+                Getting
+                ready... <br /><span class="secondary-text">(may look frozen)</span></p>
+            <textarea id="console" class="log" style="display: none;"></textarea>
+        </div>
+
+        <div id="post-jb-view" class="opacity-transition" style="width: 100%;">
+            <!-- please dont judge this, if i create the elements in js after the jailbreak it 'runs out of memory'. -->
+            <div id="payloads-list" class="grid-container">
+                <a class="btn mx-auto hidden-btn" id="payload-0" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-1" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-2" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-3" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-4" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-5" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-6" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-7" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-8" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-9" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-10" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-11" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-12" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-13" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-14" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-15" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-16" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-17" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-18" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+                <a class="btn mx-auto hidden-btn" id="payload-19" tabindex="0">
+                    <p class="payload-name"></p>
+                    <p class="payload-description"></p>
+                    <p class="payload-author"></p>
+                </a>
+            </div>
+        </div>
+
+        <center style="position: fixed;bottom: 0;width: 100%;margin-bottom: 24px" class="info opacity-transition"
+            id="credits">
+            <h4>
+                <b>v1.04.</b>
+                <br />
+                <a href="https://twitter.com/theflow0">@theflow0</a>,
+                <a href="https://twitter.com/SpecterDev">@SpecterDev</a>,
+                ChendoChap,
+                <a href="https://twitter.com/Znullptr">@Znullptr</a>,
+                <a href="https://twitter.com/sleirsgoevy">@sleirsgoevy</a>,
+                <br />
+                <a href="https://twitter.com/psxdev">@psxdev</a>,
+                <a href="https://twitter.com/flat_z">@flat_z</a>,
+                <a href="https://twitter.com/notzecoxao">@notzecoxao</a>,
+                <a href="https://twitter.com/SocraticBliss">@SocraticBliss</a>,
+                laureeeeeee
+                </h3>
+                <a href="https://github.com/idlesauce/PS5-Exploit-Host">
+                    <svg style="margin-bottom:-4px;" width="25" height="25" viewBox="0 0 98 96"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
+                            fill="#fff" />
+                    </svg>
+                    Host GitHub repo
+                </a>
+        </center>
+    </div>
+
+</body>
+<script>
+
+</script>
+  <script>
+    UA = navigator.userAgent.substring(navigator.userAgent.indexOf("4.03 (") + 28, navigator.userAgent.indexOf(") Apple"));
+    if (UA == "layStation 5/4.03") UA = "4.03";
+    if (UA == "layStation 5/4.50") UA = "4.50";
+    if (UA == "layStation 5/5.50") UA = "5.50";
+    if (UA != "4.03" && UA != "4.50" && UA != "5.50") alert("This Is For PS5 FW4.03/4.50 Only!");
+    PS4fw.innerHTML = "" + UA + "";
+  </script>
+  <script>
+    if (localStorage.passcount == null || localStorage.passcount == undefined) localStorage.passcount = 0;
+    if (localStorage.passCounter == null || localStorage.passCounter == undefined) {
+      passCounter.innerHTML = localStorage.passcount;
+    }
+    if (localStorage.failcount == null || localStorage.failcount == undefined) localStorage.failcount = 0;
+    if (localStorage.failCounter == null || localStorage.failCounter == undefined) {
+      failCounter.innerHTML = localStorage.failcount;
+    }
+  </script>
