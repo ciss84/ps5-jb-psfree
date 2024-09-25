@@ -1,18 +1,16 @@
 async function runJailbreak() {
-    let postjb = document.getElementById("post-jb-view");
-    postjb.style.opacity = "0";
-    postjb.style.pointerEvents = "none";
+    let l2_redirector = document.getElementById("l2-redirect");
+    l2_redirector.style.opacity = "0";
+
+    // Hide jailbreak button and show console
     document.getElementById("run-jb-parent").style.opacity = "0";
-    await sleep(500);
-    document.getElementById("run-jb-parent").style.display = "none";
-    document.getElementById("jb-progress").style.opacity = "1";
+    document.getElementById("console-parent").style.opacity = "1";
     await sleep(500);
 
     setTimeout(async () => {
         await run_psfree();
     }, 100);
 }
-
 function onload_setup() {
 
     if (document.documentElement.hasAttribute("manifest")) {
@@ -25,65 +23,12 @@ function onload_setup() {
     let redirector = document.getElementById("redirector-view");
     let center_view = document.getElementById("center-view");
 
-    let isTransitionInProgress = false;
+    let menu_overlay = document.getElementById("menu-overlay");
+    let menu = document.getElementById("menu-bar-wrapper");
 
-    center_view.style.transition = "left 0.4s ease, opacity 0.25s ease";
-    center_view.style.pointerEvents = "auto";
-    center_view.style.opacity = "1";
-    redirector.style.pointerEvents = "none";
-    redirector.style.opacity = "0";
-
-    window.addEventListener('keydown', function (event) {
-        if (event.keyCode == 51 || event.keyCode == 118) {
-            // seems like the browser failes to load any new pages after the jailbreak...
-            if (isTransitionInProgress || window.jb_in_progress || window.jb_started) {
-                return;
-            }
-            isTransitionInProgress = true;
-            if (redirector.style.left == "-100%") {
-                redirector.style.left = "-30%";
-                setTimeout(() => {
-                    redirector.style.transition = "left 0.4s ease, opacity 0.25s ease";
-
-                    center_view.style.pointerEvents = "none";
-                    center_view.style.opacity = "0";
-                    redirector.style.pointerEvents = "auto";
-                    redirector.style.opacity = "1";
-
-                    redirector.style.left = "0";
-                    center_view.style.left = "30%";
-                    setTimeout(() => {
-                        center_view.style.transition = "none";
-                        center_view.style.left = "100%";
-                        isTransitionInProgress = false;
-                    }, 420);
-                }, 10);
-
-            } else {
-                center_view.style.left = "30%";
-
-                setTimeout(() => {
-                    center_view.style.transition = "left 0.4s ease, opacity 0.25s ease";
-
-                    center_view.style.pointerEvents = "auto";
-                    center_view.style.opacity = "1";
-                    redirector.style.pointerEvents = "none";
-                    redirector.style.opacity = "0";
-
-                    redirector.style.left = "-30%";
-                    center_view.style.left = "0";
-                    setTimeout(() => {
-                        redirector.style.transition = "none";
-                        redirector.style.left = "-100%";
-                        isTransitionInProgress = false;
-                    }, 420);
-                }, 10);
-
-
-            }
-
-        }
-    });
+    if (localStorage.getItem("wk_exploit_type") == null) {
+        localStorage.setItem("wk_exploit_type", "psfree");
+    }
 
     create_redirector_buttons();
 }
@@ -114,12 +59,12 @@ function redirectorGo() {
 }
 
 const default_pinned_websites = [
-    "https://ciss84.github.io/ps5-jb1",
+    "https://es7in1.site/ps5",
     "https://google.com"
 ]
 
 const dummy_history = [
-    "https://ciss84.github.io/ps5-jb1",
+    "https://es7in1.site/ps5",
     "https://google.com",
     "https://ps5jb.pages.dev",
     "https://github.com",
@@ -164,7 +109,7 @@ function create_redirector_buttons() {
         a1.tabIndex = "0";
         a1.innerHTML = redirector_pinned_store[i];
         a1.onclick = () => {
-            window.location = redirector_pinned_store[i];
+            window.location.replace(redirector_pinned_store[i]);
         };
 
         div.appendChild(a1);
@@ -219,7 +164,7 @@ function create_redirector_buttons() {
         a1.tabIndex = "0";
         a1.innerHTML = redirector_history_store[i];
         a1.onclick = () => {
-            window.location = redirector_history_store[i];
+            window.location.replace(redirector_history_store[i]);
         };
         div.appendChild(a1);
 
@@ -254,55 +199,11 @@ function create_redirector_buttons() {
     }
 }
 
-async function switch_to_post_jb_view() {
-    // should already be none but just in case
-    document.getElementById("run-jb-parent").style.display = "none";
-
-    document.getElementById("jb-progress").style.opacity = "0";
-    await sleep(1000);
-    document.getElementById("jb-progress").style.display = "none";
-
-    document.getElementById("post-jb-view").style.opacity = "0";
-    document.getElementById("post-jb-view").classList.add("opacity-transition");
-    document.getElementById("post-jb-view").style.display = "flex";
-    document.getElementById("post-jb-view").style.opacity = "1";
-
-    document.getElementById("credits").style.opacity = "0";
-    document.getElementById("credits").style.display = "none";
-
-}
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// unused, the code needs to be in the main exploit function
-function create_payload_buttons() {
-    for (let i = 0; i < payload_map.length && i < 20; i++) {
-        let btn = document.getElementById("payload-" + i);
-        btn.onclick = async () => {
-            try {
-                await load_local_elf(payload_map[i].fileName);
-            }
-            catch (err) {
-                await alert(err);
-            }
-        };
-
-        let btn_child = btn.children[0];
-        btn_child.innerHTML = payload_map[i].displayTitle;
-
-        let btn_child2 = btn.children[1];
-        btn_child2.innerHTML = payload_map[i].description;
-
-        btn.style.visibility = "visible";
-        btn.style.maxHeight = 'unset';
-        btn.classList.remove("hidden-btn");
-    }
-
-}
-
-function showToast(message) {
+function showToast(message, timeout = 2000) {
     const toastContainer = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -320,5 +221,5 @@ function showToast(message) {
         toast.addEventListener('transitionend', () => {
             toast.remove();
         });
-    }, 2000);
+    }, timeout);
 }
